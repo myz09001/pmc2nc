@@ -25,7 +25,7 @@
 filterEdgeList <- function(e, count) {
   counts <- getCitationCounts(e)
   target <- counts$Target[counts$n>=count] 
-  e <- filter(e, Target ==  target)
+  e <- filter(e, Target %in% target)
   
   list(edgeList = e, counts = counts)
   
