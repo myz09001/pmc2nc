@@ -7,7 +7,8 @@ Author: Garrett M. Dancik and Anayancy Ramos
 Maintainer: Garrett Dancik <dancikg@easternct.edu>
 Description: Retrieves PMC citations and genenerates edge lists for PMC citation networks 
 License: GPL (>= 2)
+LazyData: true
 Depends:
     rentrez,
     progress
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
