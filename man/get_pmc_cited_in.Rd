@@ -4,9 +4,11 @@
 \alias{get_pmc_cited_in}
 \title{Finds "cited in" articles from PMC.}
 \usage{
-get_pmc_cited_in(pmids, batchSize = 200)
+get_pmc_cited_in(con_mysql, pmids, batchSize = 200)
 }
 \arguments{
+\item{con_mysql}{connection to mysql as defined in ~/.my.cnf}
+
 \item{pmids}{a vector of PMIDs look-up}
 
 \item{batchSize}{the batch size to use}
@@ -30,5 +32,5 @@ is set, this function allows for 10 requests per second.
 Entrez keys can be set using `set_entrez_key(key)`.
 }
 \examples{
-res <- get_pmc_cited_in(c(21876726,21876761))
+res <- get_pmc_cited_in(con_mysql, c(21876726,21876761))
 }
