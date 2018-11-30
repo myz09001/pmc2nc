@@ -23,6 +23,7 @@
 combineEdgeList <- 
   function(con_mysql, new_edgelist, db_pmids, table_name = "edgelist", target_name = "target"){
   
+  db_pmids <- paste0(db_pmids, collapse = ",")
   db_pmids <- paste0("(",db_pmids,")")
   qry <- paste0("SELECT * FROM ",table_name," WHERE ",target_name," in ",db_pmids,";")
   res <- dbGetQuery(con_mysql, qry)
