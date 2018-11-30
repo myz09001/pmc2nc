@@ -29,7 +29,7 @@
 #' @export
 
 insertEdgeList <-
-  function(con_mysql, edge_list, table_name = "EdgeList", source_name = "Source_PMID", target_name = "Target_PMID", date_table_name = "EdgeList_date"){
+  function(con_mysql, edge_list, table_name = "EdgeList", source_name = "source", target_name = "target", date_table_name = "EdgeList_date"){
   # Check if table exist in database and create table if it does not
   is_table_exist(con_mysql, table_name, source_name, target_name)
   

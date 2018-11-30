@@ -14,7 +14,7 @@
 
 #' @export
 
-check_pmids_in_db <-function(con_mysql, pmids, table_name = "EdgeList", target_name = "Target_PMID") {
+check_pmids_in_db <-function(con_mysql, pmids, table_name = "EdgeList", target_name = "target") {
   # This will search if table_name exist in database
   qry <- paste0("show tables like '",table_name,"';")
   res <- dbGetQuery(con_mysql, qry)
