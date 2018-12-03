@@ -2,30 +2,23 @@
 % Please edit documentation in R/combineEdgeList.R
 \name{combineEdgeList}
 \alias{combineEdgeList}
-\title{Combine edge list and database edge list.}
+\title{Combine 2 edge lists together}
 \usage{
-combineEdgeList(con_mysql, new_edgelist, db_pmids,
-  table_name = "edgelist", target_name = "target")
+combineEdgeList(edgelist_1, edgelist_2)
 }
 \arguments{
-\item{con_mysql}{connection to mysql as defined in ~/.my.cnf}
+\item{edgelist_1}{edge_list results, as obtained from `generateEdgeList` (see details)}
 
-\item{new_edgelist}{edge_list results, as obtained from `generateEdgeList` (see details)}
-
-\item{db_pmids}{list of pmids used to search database.}
-
-\item{table_name}{string with the name of the table used to store the edge list}
-
-\item{target_name}{string with the name of the column used to store the target of edge list}
+\item{edgelist_2}{edge_list results, as obtained from `generateEdgeList` (see details)}
 }
 \value{
-combineEdgeList() will return one dataframe after joining two datasets vertically.
+combineEdgeList() will return one dataframe after joining two edge list vertically.
 }
 \description{
-`combineEdgeList` insert the edge list from the results of `generateEdgeList`
+`edgelist_1` and `edgelist_2` must come from the result of `generateEdgeList` or `get_edge_list_db`
 }
 \details{
-`combineEdgeList` must come from the result of generateEdgeList
+`edgelist_1` and `edgelist_2` must come from the result of `generateEdgeList` or `get_edge_list_db`
 }
 \examples{
 

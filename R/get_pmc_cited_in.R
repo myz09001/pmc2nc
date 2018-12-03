@@ -29,6 +29,7 @@ function(con_mysql, pmids, batchSize = 200) {
     stop("Batch size must be betwen 1 and 200")
   } 
   
+  # I might remove this and move it outside the function
   # check if pmids are already in database. remove pmids that are already in DB
   pmids <- check_pmids_in_db(con_mysql, pmids)
   

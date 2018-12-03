@@ -10,7 +10,7 @@
 #' and multiple batches, respectively.
 #' 
 #' @param elink elink results, as obtained from `get_pmc_cited_in` (see details)
-#' @return An edge list (data.frame) with one column for target PMIDS and one column for source PMIDS
+#' @return An edge list (data.frame) with one column for target PMIDS and one column for source PMIDS.
 #' @seealso \code{\link{get_pmc_cited_in}} for obtaining elink citation results
 #' 
 #' @examples

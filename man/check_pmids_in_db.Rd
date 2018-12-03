@@ -5,7 +5,7 @@
 \title{Check Edge List Database}
 \usage{
 check_pmids_in_db(con_mysql, pmids, table_name = "EdgeList",
-  target_name = "Target_PMID")
+  target_name = "target")
 }
 \arguments{
 \item{con_mysql}{connection to mysql as defined in ~/.my.cnf}
