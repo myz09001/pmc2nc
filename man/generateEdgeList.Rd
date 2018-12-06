@@ -10,7 +10,7 @@ generateEdgeList(elink)
 \item{elink}{elink results, as obtained from `get_pmc_cited_in` (see details)}
 }
 \value{
-An edge list (data.frame) with one column for target PMIDS and one column for source PMIDS
+An edge list (data.frame) with one column for target PMIDS and one column for source PMIDS.
 }
 \description{
 `generateEdgeList` generates the edge list for results from `get_pmc_cited_in`

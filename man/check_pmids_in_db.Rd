@@ -4,17 +4,17 @@
 \alias{check_pmids_in_db}
 \title{Check Edge List Database}
 \usage{
-check_pmids_in_db(con_mysql, pmids, table_name = "EdgeList",
-  target_name = "target")
+check_pmids_in_db(conMysql, pmids, tableName = "EdgeList_Date",
+  targetName = "target")
 }
 \arguments{
-\item{con_mysql}{connection to mysql as defined in ~/.my.cnf}
+\item{conMysql}{connection to mysql as defined in ~/.my.cnf}
 
-\item{table_name}{string with the name of the table used to store the edge list}
+\item{tableName}{string with the name of the table used to store the edge list}
 
-\item{target_name}{string with the name of the column used to store the target of edge list}
+\item{targetName}{string with the name of the column used to store the target of edge list}
 
-\item{edge_list}{edge_list results, as obtained from `generateEdgeList` (see details)}
+\item{edgeList}{edgeList results, as obtained from `generateEdgeList` (see details)}
 }
 \value{
 check_pmids_in_db() return the pmids that are not already in the database.
