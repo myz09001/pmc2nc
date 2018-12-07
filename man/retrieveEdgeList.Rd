@@ -5,7 +5,7 @@
 \title{Retrieve an edge list from the provided PMIDs}
 \usage{
 retrieveEdgeList(pmids, batchSize = 200, conMysql = NULL,
-  lastUpdate = NULL, saveInDB = 1)
+  lastUpdate = NULL)
 }
 \arguments{
 \item{pmids}{a vector of PMIDs look-up.}
@@ -15,21 +15,18 @@ retrieveEdgeList(pmids, batchSize = 200, conMysql = NULL,
 \item{conMysql}{connection to mysql as defined in `~/.my.cnf`.}
 
 \item{lastUpdate}{string of a date used to find old PMIDs stored in database in YYYY-MM-DD format.}
-
-\item{saveInDB}{to choice between storing edge list in database or not. 1 = save in DB, 2 = do not save.}
 }
 \value{
 An edge list (data.frame) with one column for target PMIDS and one column for source PMIDS.
 }
 \description{
-`retrieveEdgeList` insert the edge list from the results of `generateEdgeList`
+`retrieveEdgeList` Retrieve an edge list from the provided PMIDs
 }
 \details{
-`edge_list` must come from the result of generateEdgeList
+
 }
 \examples{
 
-# place holder
 }
 \seealso{
 \code{\link{get_pmc_cited_in}} for obtaining edge_list citation results

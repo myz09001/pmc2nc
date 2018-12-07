@@ -1,9 +1,10 @@
 #' Query an pmids date from DB
 #'
-#' `get_pmids_date` insert the edge list from the results of `generateEdgeList`
+#' `get_pmids_date` query edgelist_date table for PMIDs that match.
 
 #' @details
-#' `get_pmids_date` must come from the result of generateEdgeList
+#' `get_pmids_date` query edgelist_date table for PMIDs that match the comparison of the lastUpdate
+#'  input and the date stored in the database.
 #'
 #' @param conMysql connection to mysql as defined in `~/.my.cnf`.
 #' @param lastUpdate string of the date used for comparison.
@@ -12,10 +13,8 @@
 #' @param mysqlOperator string for comparison operators '= , >, >=, <, <='. 
 #' @return An (data.frame) with one column for PMIDS and one column for date that pmid was saved to database.
 #' 
-#'
-#' @examples
-#' 
-#' 
+
+#' @export
 get_pmids_date <- function(conMysql, lastUpdate, tableName = "edgelist_date", dateName = "DatePMID", mysqlOperator = "<"){
   lastUpdate <- isDate(lastUpdate)
   if(!is.na(lastUpdate)){

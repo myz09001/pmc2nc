@@ -2,7 +2,8 @@
 #'
 #' `get_pmc_cited_in` takes a vector of article PMIDs and returns elink results containing
 #' the PMIDs of articles that cite each of the given articles.
-#'
+#' 
+#' @details
 #' Finds articles that cite the provided set of articles. This
 #' function is a wrapper for the `entrez_link` function from
 #' `rentrez`. If more than 1 PMID is specified, requests are made in batches, ensuring that
@@ -11,7 +12,6 @@
 #' is set, this function allows for 10 requests per second.
 #' Entrez keys can be set using `set_entrez_key(key)`.
 #' 
-#' @param con_mysql connection to mysql as defined in ~/.my.cnf
 #' @param pmids a vector of PMIDs look-up 
 #' @param batchSize the batch size to use
 #' @return For looking up one PMID or one batch, an elink object; for multiple batches, a list of 
@@ -19,19 +19,15 @@
 #'         object for the \eqn{i^{th}} batch.
 #'
 #' @examples
-#' res <- get_pmc_cited_in(con_mysql, c(21876726,21876761))
+#' res <- get_pmc_cited_in(c(21876726,21876761))
 
 #' @export
 get_pmc_cited_in <-
-function(con_mysql, pmids, batchSize = 200) {
+function(pmids, batchSize = 200) {
   
   if (batchSize <= 0 || batchSize > 200) {
     stop("Batch size must be betwen 1 and 200")
   } 
-  
-  # I might remove this and move it outside the function
-  # check if pmids are already in database. remove pmids that are already in DB
-  pmids <- check_pmids_in_db(con_mysql, pmids)
   
   n <- length(pmids)
 

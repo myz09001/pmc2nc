@@ -37,7 +37,7 @@ insertEdgeList <-
   is_date_table_exist(con_mysql, date_table_name, target_name)
 
   # insert dates for edge_list$target in 'EdgeList_date' table
-  mysql_date_qry_statement(con_mysql, unique(edge_list$Target), date_table_name, target_name)
+  mysql_date_qry_statement(con_mysql, unique(edge_list$target), date_table_name, target_name)
   
   # To avoid hitting any memory limits, only process 1 million rows at a time
   rowcount <-nrow(edge_list)
@@ -47,15 +47,22 @@ insertEdgeList <-
     
     # this will insert in batches
     for(x in edge_list){
-      mysql_qry_statement(con_mysql, x, table_name)
+      mysql_qry_statement(con_mysql, x, table_name, target_name)
     }
   }else{
     # this will insert in all in one go
-    mysql_qry_statement(con_mysql, edge_list, table_name)
+    mysql_qry_statement(con_mysql, edge_list, table_name, target_name)
   }
 }
 
-mysql_qry_statement <- function(con_mysql, edge_list, table_name){
+mysql_qry_statement <- function(con_mysql, edge_list, table_name, target_name){
+  # delete old edge list so there is no duplicates
+  target_delete <- unique(edge_list$target)
+  for(x in target_delete){
+    delete_paste <- paste0("DELETE FROM ",table_name," where ",target_name," = '",x,"';")
+    dbExecute(con_mysql, delete_paste)
+  }
+  
   # concatenate the two columns of edge_list so I can insert the whole thing in one insert statement
   edge_list_paste <- paste0("(" , edge_list$Source , "," , edge_list$Target, ")", collapse = ",")
 

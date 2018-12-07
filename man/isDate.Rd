@@ -2,14 +2,12 @@
 % Please edit documentation in R/isDate.R
 \name{isDate}
 \alias{isDate}
-\title{isDate will check if date input work with MySQL}
+\title{isDate will format date input to work with MySQL}
 \usage{
 isDate(mydate)
 }
 \arguments{
 \item{mydate}{string to be tested}
-
-\item{date.format}{the date format}
 }
 \value{
 isDate() returns true or false if the value is a date
@@ -18,11 +16,16 @@ isDate() returns true or false if the value is a date
 `isDate` will try to format the input into a format recognizable to MySQL. If the formating fails, it will return NA
 }
 \details{
-`edge_list` must come from the result of generateEdgeList
+`isDate` must come from the result of generateEdgeList
 }
 \examples{
 
-# place holder
+# This will print 2001-01-09"
+date<- "2001-1-9"
+isDate(date)
 
+#This will return NA
+date <- "209-01-9999"
+isDate(date)
 
 }

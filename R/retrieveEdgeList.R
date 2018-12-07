@@ -1,15 +1,13 @@
 #' Retrieve an edge list from the provided PMIDs
 #'
-#' `retrieveEdgeList` insert the edge list from the results of `generateEdgeList`
+#' `retrieveEdgeList` Retrieve an edge list from the provided PMIDs
 
 #' @details
-#' `edge_list` must come from the result of generateEdgeList
 #'
 #' @param pmids a vector of PMIDs look-up.
 #' @param batchSize the batch size to use.
 #' @param conMysql connection to mysql as defined in `~/.my.cnf`.
 #' @param lastUpdate string of a date used to find old PMIDs stored in database in YYYY-MM-DD format.
-#' @param saveInDB to choice between storing edge list in database or not. 1 = save in DB, 2 = do not save.
 #' @return An edge list (data.frame) with one column for target PMIDS and one column for source PMIDS.
 #' 
 #' 
@@ -18,7 +16,6 @@
 #'
 #' @examples
 #'
-#' # place holder
 
 # the ultimate function that does everything
 #retrieveEdgeList (pmids, batchSize = 200, con = NULL, lastUpdate = NULL){
@@ -41,45 +38,99 @@
 
 #' @export
 
-retrieveEdgeList <- function(pmids, batchSize = 200, conMysql = NULL, lastUpdate = NULL, saveInDB = 1){
-  if(!(conMysql = NULL)){
+retrieveEdgeList <- function(pmids, batchSize = 200, conMysql = NULL, lastUpdate = NULL){
+  if(!is.null(conMysql)){
     
     if(is(conMysql, "MariaDBConnection")){
-      print("true maria")
-      
-      # only keep the pmids that are not in the database already
-      pmids_not_in_db <- check_pmids_in_db(pmids)
-      
-      # find the matching pmids that are not in database
-      match_pmids <- pmids %in% pmids_not_in_db
-      
-      # only keep the pmids that is in database
-      pmids_in_db <- pmids[!match_pmids]
-      
-      
-      edgelist_from_db <- get_edge_list_db(conMysql, pmids)
-      
-      # find the matching pmids in the DB
-      #match_pmids <- pmids %in% res[[targetName]]
-      
-      # only keep the pmids that are not in the database already
-      #new_pmids <- pmids[!match_pmids]
-      
-      
+      if(!is.integer(lastUpdate)){
+        # Got conMysql, lastUpdate = NULL
+        
+        # only keep the pmids that are not in the database already
+        pmids_not_in_db <- check_pmids_in_db(conMysql, pmids)
+        elink_not_in_db <- get_pmc_cited_in(pmids_not_in_db)
+        edgelist_not_from_db <- generateEdgeList(elink_not_in_db)
+        
+        # find the matching pmids that are not in database
+        match_pmids <- pmids %in% pmids_not_in_db
+        # only keep the pmids that is in database
+        pmids_in_db <- pmids[!match_pmids]
+        #################Broken here when there is NO database yet#############
+        edgelist_from_db <- get_edge_list_db(conMysql, pmids_in_db)
+        
+        # Update database with edgelist_not_from_db only if there is values in edgelist_not_from_db
+        if(length(edgelist_not_from_db$target) != 0){
+          insertEdgeList(conMysql,edgelist_not_from_db)
+        }
+        
+        final_edge_list <- combineEdgeList(edgelist_not_from_db, edgelist_from_db)
+        
+      }else{
+        # Got conMysql, lastUpdate = NOT NULL
+        
+        # get_pmids_date that are less than `lastUpdate`.
+        # if `pmids_date` is NULL, then do not need to update. Then I can just pull all date from DB?
+        pmids_date <- get_pmids_date(conMysql, lastUpdate)
+        pmids_date <- pmids_date$target
+        
+        if(length(pmids_date) == 0){
+          # This is for when get_pmids_date get nothing from DB.
+          # This is the same as Got conMysql, lastUpdate = NULL
+          
+          # only keep the pmids that are not in the database already
+          pmids_not_in_db <- check_pmids_in_db(conMysql, pmids)
+          elink_not_in_db <- get_pmc_cited_in(pmids_not_in_db)
+          edgelist_not_from_db <- generateEdgeList(elink_not_in_db)
+          
+          # find the matching pmids that are not in database
+          match_pmids <- pmids %in% pmids_not_in_db
+          # only keep the pmids that is in database
+          pmids_in_db <- pmids[!match_pmids]
+          edgelist_from_db <- get_edge_list_db(conMysql, pmids_in_db)
+          
+          # Update database with edgelist_not_from_db only if there is values in edgelist_not_from_db
+          if(length(edgelist_not_from_db$target) != 0){
+            insertEdgeList(conMysql,edgelist_not_from_db)
+          }
+          
+          final_edge_list <- combineEdgeList(edgelist_not_from_db, edgelist_from_db)
+        }else{
+          # This is for when there is a result from get_pmids_date
+          # The pmids from get_pmids_date have to be updated
+          
+          # only keep the pmids that are not in the database already
+          pmids_not_in_db <- check_pmids_in_db(pmids)
+          elink_not_in_db <- get_pmc_cited_in(pmids_not_in_db)
+          edgelist_not_from_db <- generateEdgeList(elink_not_in_db)
+          
+          # get new edge list for pmids that needs to be update in database
+          elink_pmids_date <- get_pmc_cited_in(pmids_date)
+          edgelist_pmids_date <- generateEdgeList(elink_pmids_date)
+          
+          edgelist_not_from_db <- combineEdgeList(edgelist_not_from_db, edgelist_pmids_date)
+          
+          # find the matching pmids that are not in database
+          match_pmids <- pmids %in% pmids_not_in_db
+          # only keep the pmids that is in database
+          pmids_in_db <- pmids[!match_pmids]
+          edgelist_from_db <- get_edge_list_db(conMysql, pmids_in_db)
+          
+          insertEdgeList(conMysql, edgelist_not_from_db)
+          
+          final_edge_list <- combineEdgeList(edgelist_not_from_db, edgelist_from_db)
+        }
+        
+      }
+    
     }else{
       print("You 'con' argument is not a MariaDBConnection")
       # figure how to stop retrieveEdgeList() early
     }
     
-    # combine comes here
     
   }else{
-    res <- get_pmc_cited_in(pmids, batchSize)
-    e1 <- generateEdgeList1(res)
+    # Only get edge list from NCBI because conMysql = NULL
+    res <- get_pmc_cited_in(pmids)
+    final_edge_list <- generateEdgeList(res)
   }
-  
-  
-  
-  
-  
+  final_edge_list
 }

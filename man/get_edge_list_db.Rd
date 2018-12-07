@@ -20,10 +20,10 @@ get_edge_list_db(con_mysql, pmids, table_name = "edgelist",
 get_edge_list_db() will return the edge list in dataframe
 }
 \description{
-`get_edge_list_db` will retrieve edge list from database with the provided list of PMIDs
+`get_edge_list_db` will retrieve edge list from database with the provided list of PMIDs.
 }
 \details{
-`combineEdgeList` must come from the result of generateEdgeList
+`get_edge_list_db` will retrieve edge list from database with the provided list of PMIDs.
 }
 \examples{
 x <- c(21876761, 311, 29463753, 21876726)

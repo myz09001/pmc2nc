@@ -22,12 +22,9 @@ get_pmids_date(conMysql, lastUpdate, tableName = "edgelist_date",
 An (data.frame) with one column for PMIDS and one column for date that pmid was saved to database.
 }
 \description{
-`get_pmids_date` insert the edge list from the results of `generateEdgeList`
+`get_pmids_date` query edgelist_date table for PMIDs that match.
 }
 \details{
-`get_pmids_date` must come from the result of generateEdgeList
-}
-\examples{
-
-
+`get_pmids_date` query edgelist_date table for PMIDs that match the comparison of the lastUpdate
+ input and the date stored in the database.
 }

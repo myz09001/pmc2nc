@@ -20,7 +20,3 @@ combineEdgeList() will return one dataframe after joining two edge list vertical
 \details{
 `edgelist_1` and `edgelist_2` must come from the result of `generateEdgeList` or `get_edge_list_db`
 }
-\examples{
-
-# place holder
-}

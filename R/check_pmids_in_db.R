@@ -6,7 +6,7 @@
 #' `pmids` comes from user on shiny app
 #'
 #' @param conMysql connection to mysql as defined in ~/.my.cnf
-#' @param edgeList edgeList results, as obtained from `generateEdgeList` (see details)
+#' @param pmids pmids a vector of PMIDs look-up 
 #' @param tableName string with the name of the table used to store the edge list
 #' @param targetName string with the name of the column used to store the target of edge list
 #' @return check_pmids_in_db() return the pmids that are not already in the database.

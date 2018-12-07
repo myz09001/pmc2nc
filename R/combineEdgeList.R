@@ -9,11 +9,6 @@
 #' @param edgelist_2 edge_list results, as obtained from `generateEdgeList` (see details)
 #' @return combineEdgeList() will return one dataframe after joining two edge list vertically.
 
-#' @examples
-#'
-#' # place holder
-
-
 
 #' @export
 #' 

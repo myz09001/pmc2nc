@@ -10,11 +10,11 @@ check_pmids_in_db(conMysql, pmids, tableName = "EdgeList_Date",
 \arguments{
 \item{conMysql}{connection to mysql as defined in ~/.my.cnf}
 
+\item{pmids}{pmids a vector of PMIDs look-up}
+
 \item{tableName}{string with the name of the table used to store the edge list}
 
 \item{targetName}{string with the name of the column used to store the target of edge list}
-
-\item{edgeList}{edgeList results, as obtained from `generateEdgeList` (see details)}
 }
 \value{
 check_pmids_in_db() return the pmids that are not already in the database.
