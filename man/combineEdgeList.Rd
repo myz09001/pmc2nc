@@ -18,5 +18,6 @@ combineEdgeList() will return one dataframe after joining two edge list vertical
 `edgelist_1` and `edgelist_2` must come from the result of `generateEdgeList` or `get_edge_list_db`
 }
 \details{
-`edgelist_1` and `edgelist_2` must come from the result of `generateEdgeList` or `get_edge_list_db`
+`edgelist_1` and `edgelist_2` must come from the result of `generateEdgeList` or `get_edge_list_db`.
+If either edgelist_1 or edgelist_2 are NULL, only pass the edge list with values in it.
 }

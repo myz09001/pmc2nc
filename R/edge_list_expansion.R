@@ -6,7 +6,7 @@
 #' `edge_list` must come from the result of generateEdgeList
 #'
 #' @param edge_list edge_list results, as obtained from `generateEdgeList` (see details)
-#' @return a list of elink list objects are returned.
+#' @return An edge list (data.frame) with one column for target PMIDS and one column for source PMIDS.
 #' @seealso \code{\link{get_pmc_cited_in}} for obtaining elink citation results
 #' @seealso \code{\link{generateEdgeList}} for obtaining elink citation results
 #'
@@ -32,5 +32,7 @@ edge_list_expansion <- function(edge_list){
   # keep only the unique pmids
   pmids <- unique(pmids)
 
-  get_pmc_cited_in(pmids)
+  res <- get_pmc_cited_in(pmids)
+  
+  res <- generateEdgeList(res)
 }

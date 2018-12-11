@@ -10,7 +10,7 @@ edge_list_expansion(edge_list)
 \item{edge_list}{edge_list results, as obtained from `generateEdgeList` (see details)}
 }
 \value{
-a list of elink list objects are returned.
+An edge list (data.frame) with one column for target PMIDS and one column for source PMIDS.
 }
 \description{
 `edge_list_expansion` insert the edge list from the results of `generateEdgeList`

@@ -17,16 +17,10 @@ retrieveEdgeList(pmids, batchSize = 200, conMysql = NULL,
 \item{lastUpdate}{string of a date used to find old PMIDs stored in database in YYYY-MM-DD format.}
 }
 \value{
-An edge list (data.frame) with one column for target PMIDS and one column for source PMIDS.
+An edge list (data.frame) with one column for Target PMIDS and one column for source PMIDS.
 }
 \description{
 `retrieveEdgeList` Retrieve an edge list from the provided PMIDs
-}
-\details{
-
-}
-\examples{
-
 }
 \seealso{
 \code{\link{get_pmc_cited_in}} for obtaining edge_list citation results

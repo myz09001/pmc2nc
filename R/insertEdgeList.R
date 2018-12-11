@@ -9,7 +9,7 @@
 #' @param edge_list edge_list results, as obtained from `generateEdgeList` (see details)
 #' @param table_name string with the name of the table used to store the edge list
 #' @param source_name string with the name of the column used to store the source of edge list
-#' @param target_name string with the name of the column used to store the target of edge list
+#' @param target_name string with the name of the column used to store the Target of edge list
 #' @param date_table_name string with the name of the table used to store the dates for pmids
 #' @return insertEdgeList() always returns a scalar numeric that specifies the number of rows
 #'         affected by the statement. An error is raised when issuing a statement over a closed
@@ -29,15 +29,15 @@
 #' @export
 
 insertEdgeList <-
-  function(con_mysql, edge_list, table_name = "EdgeList", source_name = "source", target_name = "target", date_table_name = "EdgeList_date"){
+  function(con_mysql, edge_list, table_name = "EdgeList", source_name = "source", target_name = "Target", date_table_name = "EdgeList_date"){
   # Check if table exist in database and create table if it does not
-  is_table_exist(con_mysql, table_name, source_name, target_name)
+    create_edge_list_table(con_mysql, table_name, source_name, target_name)
   
   # Check if date table exist in database and create date table if it does not  
-  is_date_table_exist(con_mysql, date_table_name, target_name)
+    create_date_table(con_mysql, date_table_name, target_name)
 
-  # insert dates for edge_list$target in 'EdgeList_date' table
-  mysql_date_qry_statement(con_mysql, unique(edge_list$target), date_table_name, target_name)
+  # insert dates for edge_list$Target in 'EdgeList_date' table
+  mysql_date_qry_statement(con_mysql, unique(edge_list$Target), date_table_name, target_name)
   
   # To avoid hitting any memory limits, only process 1 million rows at a time
   rowcount <-nrow(edge_list)
@@ -57,7 +57,7 @@ insertEdgeList <-
 
 mysql_qry_statement <- function(con_mysql, edge_list, table_name, target_name){
   # delete old edge list so there is no duplicates
-  target_delete <- unique(edge_list$target)
+  target_delete <- unique(edge_list$Target)
   for(x in target_delete){
     delete_paste <- paste0("DELETE FROM ",table_name," where ",target_name," = '",x,"';")
     dbExecute(con_mysql, delete_paste)
@@ -71,42 +71,6 @@ mysql_qry_statement <- function(con_mysql, edge_list, table_name, target_name){
 
   # execute the insert statement
   dbExecute(con_mysql, qry)
-}
-
-is_table_exist <- function(con_mysql, table_name, source_name, target_name){
-  # This will search if table_name exist in database
-  qry <- paste0("show tables like '",table_name,"';")
-  res <- dbGetQuery(con_mysql, qry)
-
-  # Create the table if it is not found by checking length of res
-  if (length(res[[1]]) == 0){
-    print("No table found. Creating table now.")
-    qry <- paste0("CREATE TABLE ",table_name," (
-                  ",source_name," INT,
-                  ",target_name," INT,
-                  INDEX index_source(",target_name,"));")
-    dbExecute(con_mysql, qry)
-  }else{
-    print("Table is found.")
-  }
-}
-
-is_date_table_exist <- function(con_mysql, table_name, target_name, date_name = "DatePMID"){
-  # This will search if table_name exist in database
-  qry <- paste0("show tables like '",table_name,"';")
-  res <- dbGetQuery(con_mysql, qry)
-
-  # Create the table if it is not found by checking length of res
-  if (length(res[[1]]) == 0){
-    print("No table found. Creating table now.")
-    qry <- paste0("CREATE TABLE ",table_name," (
-                  ",target_name," INT,
-                  ",date_name," date,
-                  INDEX index_source(",target_name,"));")
-    dbExecute(con_mysql, qry)
-  }else{
-    print("Date table is found.")
-  }
 }
 
 mysql_date_qry_statement <- function(con_mysql, edge_list, table_name, target_name){

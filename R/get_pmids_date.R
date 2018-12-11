@@ -13,7 +13,16 @@
 #' @param mysqlOperator string for comparison operators '= , >, >=, <, <='. 
 #' @return An (data.frame) with one column for PMIDS and one column for date that pmid was saved to database.
 #' 
-
+#' @examples
+#' 
+#' # This will return a list of PMIDs if there is a match
+#' date <- "2001-1-9"
+#' res <- get_pmids_date(conMysql, date)
+#'
+#' # This will return NULL
+#' date <- "209-01-9999"
+#' res <- get_pmids_date(conMysql, date)
+#' 
 #' @export
 get_pmids_date <- function(conMysql, lastUpdate, tableName = "edgelist_date", dateName = "DatePMID", mysqlOperator = "<"){
   lastUpdate <- isDate(lastUpdate)
@@ -21,7 +30,7 @@ get_pmids_date <- function(conMysql, lastUpdate, tableName = "edgelist_date", da
     qry <- paste0("SELECT * FROM ",tableName," WHERE ",dateName," " ,mysqlOperator," '",lastUpdate,"';")
     res <- dbGetQuery(conMysql, qry)
   }else{
-    print("format of last update date is incorrect. Has to be YYYY-MM-DD.")
+    print("Format of last update date is incorrect. Has to be YYYY-MM-DD.")
     res <- NULL
   }
 }

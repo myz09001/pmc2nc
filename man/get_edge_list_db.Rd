@@ -5,7 +5,7 @@
 \title{Retrieve edge list from database}
 \usage{
 get_edge_list_db(con_mysql, pmids, table_name = "edgelist",
-  target_name = "target")
+  target_name = "Target")
 }
 \arguments{
 \item{con_mysql}{connection to mysql as defined in ~/.my.cnf}
@@ -14,7 +14,7 @@ get_edge_list_db(con_mysql, pmids, table_name = "edgelist",
 
 \item{table_name}{string with the name of the table used to store the edge list}
 
-\item{target_name}{string with the name of the column used to store the target of edge list}
+\item{target_name}{string with the name of the column used to store the Target of edge list}
 }
 \value{
 get_edge_list_db() will return the edge list in dataframe

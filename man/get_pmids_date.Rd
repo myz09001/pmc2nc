@@ -28,3 +28,14 @@ An (data.frame) with one column for PMIDS and one column for date that pmid was 
 `get_pmids_date` query edgelist_date table for PMIDs that match the comparison of the lastUpdate
  input and the date stored in the database.
 }
+\examples{
+
+# This will return a list of PMIDs if there is a match
+date <- "2001-1-9"
+res <- get_pmids_date(conMysql, date)
+
+# This will return NULL
+date <- "209-01-9999"
+res <- get_pmids_date(conMysql, date)
+
+}

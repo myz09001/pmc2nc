@@ -5,7 +5,7 @@
 \title{Check Edge List Database}
 \usage{
 check_pmids_in_db(conMysql, pmids, tableName = "EdgeList_Date",
-  targetName = "target")
+  targetName = "Target")
 }
 \arguments{
 \item{conMysql}{connection to mysql as defined in ~/.my.cnf}
@@ -14,14 +14,20 @@ check_pmids_in_db(conMysql, pmids, tableName = "EdgeList_Date",
 
 \item{tableName}{string with the name of the table used to store the edge list}
 
-\item{targetName}{string with the name of the column used to store the target of edge list}
+\item{targetName}{string with the name of the column used to store the Target of edge list}
 }
 \value{
-check_pmids_in_db() return the pmids that are not already in the database.
+check_pmids_in_db() return the pmids that are not in the database.
 }
 \description{
 `check_pmids_in_db` check if PMIDs have been searched and saved in database already. Only return PMIDs that are new.
 }
 \details{
 `pmids` comes from user on shiny app
+}
+\examples{
+# In this example, PMIDs 123 and 456 are in the database
+pmids_lookup <- c(123, 456, 759, 869)
+res <- check_pmids_in_db(conMysql, pmids_lookup)
+# res will print out 759 and 869
 }

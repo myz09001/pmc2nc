@@ -11,12 +11,12 @@
 #' @examples
 #' 
 #' # This will print 2001-01-09"
-#' date<- "2001-1-9"
-#' isDate(date)
+#' date <- "2001-1-9"
+#' <- isDate(date)
 #'
-#' #This will return NA
+#' # This will return NA
 #' date <- "209-01-9999"
-#' isDate(date)
+#' res <- isDate(date)
 #' 
 
 #' @export
