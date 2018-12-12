@@ -32,6 +32,8 @@
 #'
 #' @examples
 
+############################ I do not have PMID found for being in DB and do not need to be updated
+####################### NULL vs length(x) == 0
 
 #' @export
 
@@ -43,11 +45,12 @@ retrieveEdgeList <- function(pmids, batchSize = 200, conMysql = NULL, lastUpdate
       create_edge_list_table(conMysql)
       create_date_table(conMysql)
       
-      if(!is.integer(lastUpdate)){
+      if(is.null(lastUpdate)){
         # Got conMysql, lastUpdate = NULL
         
         final_edge_list <- retrieveEdgeList1(pmids, batchSize, conMysql, lastUpdate)
         
+        ################### This else has to be a else if for lastupdate isData check!
       }else{
         # Got conMysql, lastUpdate = NOT NULL
         
@@ -91,17 +94,15 @@ retrieveEdgeList <- function(pmids, batchSize = 200, conMysql = NULL, lastUpdate
       }
     
     }else{
-      print("You 'con' argument is not a MariaDBConnection")
-      # figure how to stop retrieveEdgeList() early
+      print("You 'conMysql' argument is not a MariaDBConnection")
+      final_edge_list <- NULL
     }
-    
     
   }else{
     # Only get edge list from NCBI because conMysql = NULL
     res <- get_pmc_cited_in(pmids)
     final_edge_list <- generateEdgeList(res)
   }
-  final_edge_list
 }
 
 retrieveEdgeList1 <- function(pmids, batchSize, conMysql, lastUpdate){

@@ -1,15 +1,17 @@
 #' Check Edge List Database
 #'
-#' `check_pmids_in_db` check if PMIDs have been searched and saved in database already. Only return PMIDs that are new.
+#' `check_pmids_in_db` check if PMIDs have been searched and saved in database already.
 
 #' @details
-#' `pmids` comes from user on shiny app
+#' `check_pmids_in_db` will search EdgeList_date for matching pmids. 
 #'
 #' @param conMysql connection to mysql as defined in ~/.my.cnf
 #' @param pmids pmids a vector of PMIDs look-up 
 #' @param tableName string with the name of the table used to store the edge list
 #' @param targetName string with the name of the column used to store the Target of edge list
 #' @return check_pmids_in_db() return the pmids that are not in the database.
+#'
+#' @seealso \code{\link{create_date_table}} for edge list date table structure
 #'
 #' @examples
 #' # In this example, PMIDs 123 and 456 are in the database
@@ -42,7 +44,7 @@ check_pmids_in_db <-function(conMysql, pmids, tableName = "EdgeList_Date", targe
     new_pmids <- pmids[!match_pmids]
   }else{
     print("Table does not exist in database.")
-    pmids
+    res <- NULL
   }
 }
 

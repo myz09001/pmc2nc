@@ -19,6 +19,9 @@ combineEdgeList <- function(edgelist_1, edgelist_2){
   }else if (length(edgelist_1) == 0 && length(edgelist_2) != 0){
     print("One edge list does not have any values, returning the one with values")
     res <- edgelist_2
+  }else if(length(edgelist_1) == 0 && length(edgelist_2) == 0){
+    print("Both edge list is empty. Returning NULL")
+    res <- NULL
   }else{
     print("Combining two edge list now.")
     res <- rbind(edgelist_1, edgelist_2)

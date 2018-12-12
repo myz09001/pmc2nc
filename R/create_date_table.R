@@ -11,7 +11,7 @@
 #' DatePMID date,
 #' INDEX index_target(Target));
 #' 
-#' @param con_mysql connection to mysql as defined in ~/.my.cnf
+#' @param conMysql connection to mysql as defined in ~/.my.cnf
 #' @param tableName string with the name of the table used to store the dates for pmids
 #' @param targetName string with the name of the column used to store the Target of edge list
 #' @param dateName string with the name of the column used to store the date of edge list
@@ -21,10 +21,10 @@
 #'         not a non-NA string.
 
 #' @export
-create_date_table <- function(con_mysql, tableName = "EdgeList_date", targetName = "Target", dateName = "DatePMID"){
+create_date_table <- function(conMysql, tableName = "EdgeList_date", targetName = "Target", dateName = "DatePMID"){
   # This will search if tableName exist in database
   qry <- paste0("show tables like '",tableName,"';")
-  res <- dbGetQuery(con_mysql, qry)
+  res <- dbGetQuery(conMysql, qry)
   
   # Create the table if it is not found by checking length of res
   if (length(res[[1]]) == 0){
@@ -33,7 +33,7 @@ create_date_table <- function(con_mysql, tableName = "EdgeList_date", targetName
                   ",targetName," INT,
                   ",dateName," date,
                   INDEX index_target(",targetName,"));")
-    dbExecute(con_mysql, qry)
+    dbExecute(conMysql, qry)
   }else{
     print("Date table is found.")
   }
