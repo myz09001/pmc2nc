@@ -3,7 +3,9 @@
 #' `insertEdgeList` insert the edge list from the results of `generateEdgeList`
 
 #' @details
-#' `edgeList` must come from the result of generateEdgeList
+#' `edgeList` must come from the result of generateEdgeList. The edge list will be stored in to
+#' table called Edgelist by default. This table have SourcePMID and Target column. It will also store
+#' the date when the target PMID was inserted to the database in a table called EdgeList_date.
 #'
 #' @param conMysql connection to mysql as defined in ~/.my.cnf
 #' @param edgeList edgeList results, as obtained from `generateEdgeList` (see details)
@@ -31,8 +33,9 @@
 #' @export
 
 insertEdgeList <-
-  function(conMysql, edgeList, tableName = "EdgeList", sourceName = "SourcePMID", targetName = "Target", dateTableName = "EdgeList_date"){
+  function(conMysql, edgeList, tableName = "EdgeList", sourceName = "Source", targetName = "Target", dateTableName = "EdgeList_date"){
     if (length(edgeList) != 0){
+      print("insertEdgeList: Inserting edge list into database now.")
       # Check if table exist in database and create table if it does not
       create_edge_list_table(conMysql, tableName, sourceName, targetName)
       
@@ -57,7 +60,7 @@ insertEdgeList <-
         mysql_qry_statement(conMysql, edgeList, tableName, targetName)
       }
     }else{
-      print("Input is empty. Nothing to insert to database.")
+      print("insertEdgeList: Input is empty. Nothing to insert to database.")
       res <- NULL
     }
 }

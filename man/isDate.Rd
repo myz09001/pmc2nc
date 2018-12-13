@@ -7,16 +7,16 @@
 isDate(mydate)
 }
 \arguments{
-\item{mydate}{string to be tested}
+\item{mydate}{string to be formated.}
 }
 \value{
-isDate() returns true or false if the value is a date
+isDate() returns date in the format of YYYY-MM-DD. Returns NA if it fails to format.
 }
 \description{
 `isDate` will try to format the input into a format recognizable to MySQL. If the formating fails, it will return NA
 }
 \details{
-`isDate` must come from the result of generateEdgeList
+`isDate` will try to format the input in YYYY-MM-DD and it will return NA if it cannot format the input.
 }
 \examples{
 

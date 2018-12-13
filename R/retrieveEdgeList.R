@@ -3,23 +3,7 @@
 #' `retrieveEdgeList` Retrieve an edge list from the provided PMIDs
 
 #' @details
-#' retrieveEdgeList (pmids, batchSize = 200, con = NULL, lastUpdate = NULL){
-#'  1. if con is not NULL then
-#'  (pmids) 1. pmids1(in db and update >= last update)
-#'          2. pmids2(not in db and not updated table because that means it searched but not results in NCI)
 
-#'  2. get edge list from NCBI
-#'        res1 <- get_pmc_cited_in(pmids2)
-#'        e1 <- generateEgeList(res1)
-#'        -> add to db and update the update table if con is not NULL
-
-#'  3. If specified, get edgelist from DB
-#'        e2 <- get_edge_list_from_db(conMysql, pmids)
-
-#'  4. combine_edge_list
-
-#'  5. return edge list
-#'  
 #' @param pmids a vector of PMIDs look-up.
 #' @param batchSize the batch size to use.
 #' @param conMysql connection to mysql as defined in `~/.my.cnf`.
@@ -32,9 +16,6 @@
 #'
 #' @examples
 
-############################ I do not have PMID found for being in DB and do not need to be updated
-####################### NULL vs length(x) == 0
-
 #' @export
 
 retrieveEdgeList <- function(pmids, batchSize = 200, conMysql = NULL, lastUpdate = NULL){
@@ -46,51 +27,74 @@ retrieveEdgeList <- function(pmids, batchSize = 200, conMysql = NULL, lastUpdate
       create_date_table(conMysql)
       
       if(is.null(lastUpdate)){
-        # Got conMysql, lastUpdate = NULL
+        # conMysql = TRUE, lastUpdate = NULL
         
         final_edge_list <- retrieveEdgeList1(pmids, batchSize, conMysql, lastUpdate)
         
-        ################### This else has to be a else if for lastupdate isData check!
-      }else{
-        # Got conMysql, lastUpdate = NOT NULL
+        # This else if makes sure the lastUpdate is a valid date for MySQL
+      }else if (!is.na(isDate(lastUpdate))){
+        # conMysql = TRUE, lastUpdate = NOT NULL
         
         # get_pmids_date that are less than `lastUpdate`.
-        # if `pmids_date` is NULL, then do not need to update. Then I can just pull all date from DB?
+        # if `pmids_date` is NULL, then do not need to update. Then it is the same as conMysql = TRUE, lastUpdate = NULL
         pmids_date <- get_pmids_date(conMysql, lastUpdate)
         pmids_date <- pmids_date$Target
         
         if(length(pmids_date) == 0){
           # This is for when get_pmids_date get nothing from DB.
-          # This is the same as Got conMysql, lastUpdate = NULL
+          # Therefor its the same as conMysql = TRUE, lastUpdate = NULL
           
           final_edge_list <- retrieveEdgeList1(pmids, batchSize, conMysql, lastUpdate)
           
         }else{
           # This is for when there is a result from get_pmids_date
           # The pmids from get_pmids_date have to be updated
-
+          
           # only keep the pmids that are not in the database already
-          pmids_not_in_db <- check_pmids_in_db(pmids)
-          elink_not_in_db <- get_pmc_cited_in(pmids_not_in_db)
-          edgelist_not_from_db <- generateEdgeList(elink_not_in_db)
+          pmids_not_in_db <- find_pmids_not_in_db(conMysql, pmids)
           
-          # get new edge list for pmids that needs to be update in database
-          elink_pmids_date <- get_pmc_cited_in(pmids_date)
-          edgelist_pmids_date <- generateEdgeList(elink_pmids_date)
-          
-          edgelist_not_from_db <- combineEdgeList(edgelist_not_from_db, edgelist_pmids_date)
+          if (length(pmids_not_in_db) != 0){
+            elink_not_in_db <- get_pmc_cited_in(pmids_not_in_db, batchSize)
+            edgelist_not_from_db <- generateEdgeList(elink_not_in_db)
+          }else{
+            # When everything is already in database so edgelist_not_from_db will be NULL
+            edgelist_not_from_db <- NULL
+          }
           
           # find the matching pmids that are not in database
           match_pmids <- pmids %in% pmids_not_in_db
           # only keep the pmids that is in database
           pmids_in_db <- pmids[!match_pmids]
+          
+          # need to filter pmids_date to only pmids I care about. Right now its getting ALL pmids that meet lastUpdate.
+          match_pmids <- pmids_date %in% pmids_in_db
+          pmids_date_keep <- pmids_date[match_pmids]
+          
+
+          # get new edge list for pmids that needs to be update in database
+          elink_pmids_date <- get_pmc_cited_in(pmids_date_keep, batchSize)
+          edgelist_pmids_date <- generateEdgeList(elink_pmids_date)
+          
+          # This will combine both edge list from NCBI and edge list from DB that needs to be updated
+          edgelist_not_from_db <- combineEdgeList(edgelist_not_from_db, edgelist_pmids_date)
+          
+          
+          ###### One last thing to change ###########
+          # the order is messed up  with qry and insert. the insert needs to be done first so update pmid will clear the old data
+          # pmids_in_db needs to remove the pmids from pmids_date_keep
+          
+          # qry DB for edge list
           edgelist_from_db <- get_edge_list_db(conMysql, pmids_in_db)
           
+          # insert edge list not from DB
           insertEdgeList(conMysql, edgelist_not_from_db)
           
           final_edge_list <- combineEdgeList(edgelist_not_from_db, edgelist_from_db)
         }
         
+      }else{
+        print("lastUpdate input is not in YYYY-MM-DD format")
+        final_edge_list <- NULL
       }
     
     }else{
@@ -100,44 +104,39 @@ retrieveEdgeList <- function(pmids, batchSize = 200, conMysql = NULL, lastUpdate
     
   }else{
     # Only get edge list from NCBI because conMysql = NULL
-    res <- get_pmc_cited_in(pmids)
+    res <- get_pmc_cited_in(pmids, batchSize)
     final_edge_list <- generateEdgeList(res)
   }
 }
 
+# Because when get_pmids_date get nothing from DB will query the same way as conMysql = TRUE, lastUpdate = NULL,
+# I made it into one function.
 retrieveEdgeList1 <- function(pmids, batchSize, conMysql, lastUpdate){
-  
   # only keep the pmids that are not in the database already
-  
-  ### wait this should be a get_pmids_date because its just checking for table date. checking edgelist can have some missings when been searched with no results###
-  
-  ### wait again! this is check edge list date wtf im i doing?! ###########
-  pmids_not_in_db <- check_pmids_in_db(conMysql, pmids)
+  pmids_not_in_db <- find_pmids_not_in_db(conMysql, pmids)
   
   if (length(pmids_not_in_db) != 0){
-    elink_not_in_db <- get_pmc_cited_in(pmids_not_in_db)
+    elink_not_in_db <- get_pmc_cited_in(pmids_not_in_db, batchSize)
     edgelist_not_from_db <- generateEdgeList(elink_not_in_db)
   }else{
+    # When everything is already in database so edgelist_not_from_db will be NULL
     edgelist_not_from_db <- NULL
   }
   
-  
   # find the matching pmids that are not in database
   match_pmids <- pmids %in% pmids_not_in_db
+  
   # only keep the pmids that is in database
   pmids_in_db <- pmids[!match_pmids]
   
-  if(length(pmids_in_db) != 0){
-    edgelist_from_db <- get_edge_list_db(conMysql, pmids_in_db)
-    final_edge_list <- combineEdgeList(edgelist_not_from_db, edgelist_from_db)
-    print("Take info from database")
-  }else{
-    final_edge_list <- edgelist_not_from_db
-  }
+  # qry DB for edge list
+  edgelist_from_db <- get_edge_list_db(conMysql, pmids_in_db)
   
-  # Update database with edgelist_not_from_db only if there is values in edgelist_not_from_db
-  if(length(edgelist_not_from_db) != 0){
-    insertEdgeList(conMysql, edgelist_not_from_db)
-  }
-  final_edge_list
+  # insert edge list not from DB
+  insertEdgeList(conMysql, edgelist_not_from_db)
+
+  final_edge_list <- combineEdgeList(edgelist_not_from_db, edgelist_from_db)
 }
+
+
+

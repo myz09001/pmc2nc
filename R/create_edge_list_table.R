@@ -24,20 +24,20 @@
 #'
 
 #' @export
-create_edge_list_table <- function(con_mysql, tableName = "EdgeList", sourceName = "SourcePMID", targetName = "Target"){
+create_edge_list_table <- function(con_mysql, tableName = "EdgeList", sourceName = "Source", targetName = "Target"){
   # This will search if tableName exist in database
   qry <- paste0("show tables like '",tableName,"';")
   res <- dbGetQuery(con_mysql, qry)
   
   # Create the table if it is not found by checking length of res
   if (length(res[[1]]) == 0){
-    print("No table found. Creating table now.")
+    print("create_edge_list_table: No table found. Creating table now.")
     qry <- paste0("CREATE TABLE ",tableName," (
                   ",sourceName," INT,
                   ",targetName," INT,
                   INDEX index_target(",targetName,"));")
     dbExecute(con_mysql, qry)
   }else{
-    print("Table is found.")
+    print("create_edge_list_table: Table is found.")
   }
 }

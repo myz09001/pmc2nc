@@ -4,11 +4,11 @@
 \alias{create_date_table}
 \title{Create edge list date table if not found.}
 \usage{
-create_date_table(con_mysql, tableName = "EdgeList_date",
+create_date_table(conMysql, tableName = "EdgeList_date",
   targetName = "Target", dateName = "DatePMID")
 }
 \arguments{
-\item{con_mysql}{connection to mysql as defined in ~/.my.cnf}
+\item{conMysql}{connection to mysql as defined in ~/.my.cnf}
 
 \item{tableName}{string with the name of the table used to store the dates for pmids}
 

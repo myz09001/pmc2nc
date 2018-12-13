@@ -27,12 +27,13 @@ get_edge_list_db <-
     qry <- paste0("show tables like '",tableName,"';")
     res <- dbGetQuery(conMysql, qry)
     
-    # If the table do exist, run check table for pmids else do nothing
+    # If the table do exist, check if pmids argument actually have values.
     if (length(res[[1]]) == 1){
       
       if (length(pmids) != 0){
       
-    
+        print("get_edge_list_db: Querying edge list from database.")
+        
         # format list of pmids for mysql query
         pmids <- paste0(pmids, collapse = ",")
         #pmids <- paste0("(",pmids,")")
@@ -41,11 +42,11 @@ get_edge_list_db <-
         qry <- paste0("SELECT * FROM ",tableName," WHERE ",targetName," in (",pmids,");")
         res <- dbGetQuery(conMysql, qry)
       }else{
-        print("PMID input is empty. Cannot search database.")
+        print("get_edge_list_db: PMID input is empty. Cannot search database.")
         res <- NULL
       }
     }else{
-      print("Table does not exist in database.")
+      print("get_edge_list_db: Table does not exist in database.")
       res <- NULL
     }
   }

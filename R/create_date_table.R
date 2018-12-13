@@ -28,13 +28,13 @@ create_date_table <- function(conMysql, tableName = "EdgeList_date", targetName 
   
   # Create the table if it is not found by checking length of res
   if (length(res[[1]]) == 0){
-    print("No table found. Creating date table now.")
+    print("create_date_table: No table found. Creating date table now.")
     qry <- paste0("CREATE TABLE ",tableName," (
                   ",targetName," INT,
                   ",dateName," date,
                   INDEX index_target(",targetName,"));")
     dbExecute(conMysql, qry)
   }else{
-    print("Date table is found.")
+    print("create_date_table: Date table is found.")
   }
 }

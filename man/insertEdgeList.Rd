@@ -4,22 +4,22 @@
 \alias{insertEdgeList}
 \title{Insert edge lists to mysql database.}
 \usage{
-insertEdgeList(con_mysql, edge_list, table_name = "EdgeList",
-  source_name = "source", target_name = "Target",
-  date_table_name = "EdgeList_date")
+insertEdgeList(conMysql, edgeList, tableName = "EdgeList",
+  sourceName = "SourcePMID", targetName = "Target",
+  dateTableName = "EdgeList_date")
 }
 \arguments{
-\item{con_mysql}{connection to mysql as defined in ~/.my.cnf}
+\item{conMysql}{connection to mysql as defined in ~/.my.cnf}
 
-\item{edge_list}{edge_list results, as obtained from `generateEdgeList` (see details)}
+\item{edgeList}{edgeList results, as obtained from `generateEdgeList` (see details)}
 
-\item{table_name}{string with the name of the table used to store the edge list}
+\item{tableName}{string with the name of the table used to store the edge list}
 
-\item{source_name}{string with the name of the column used to store the source of edge list}
+\item{sourceName}{string with the name of the column used to store the source of edge list}
 
-\item{target_name}{string with the name of the column used to store the Target of edge list}
+\item{targetName}{string with the name of the column used to store the Target of edge list}
 
-\item{date_table_name}{string with the name of the table used to store the dates for pmids}
+\item{dateTableName}{string with the name of the table used to store the dates for pmids}
 }
 \value{
 insertEdgeList() always returns a scalar numeric that specifies the number of rows
@@ -31,17 +31,23 @@ insertEdgeList() always returns a scalar numeric that specifies the number of ro
 `insertEdgeList` insert the edge list from the results of `generateEdgeList`
 }
 \details{
-`edge_list` must come from the result of generateEdgeList
+`edgeList` must come from the result of generateEdgeList. The edge list will be stored in to
+table called Edgelist by default. This table have SourcePMID and Target column. It will also store
+the date when the target PMID was inserted to the database in a table called EdgeList_date.
 }
 \examples{
 
 # generate an edge list for a single article and then insert the data to the table called "edgelist"
 res1 <- get_pmc_cited_in(21876761)
 e2 <- generateEdgeList(res1)
-insertEdgeList(con_mysql, e2)
+insertEdgeList(conMysql, e2)
 }
 \seealso{
-\code{\link{get_pmc_cited_in}} for obtaining edge_list citation results
+\code{\link{get_pmc_cited_in}} for obtaining edgeList citation results
 
-\code{\link{generateEdgeList}} for obtaining edge_list citation results
+\code{\link{generateEdgeList}} for obtaining edgeList citation results
+
+\code{\link{create_edge_list_table}} for edge list table structure
+
+\code{\link{create_date_table}} for edge list date table structure
 }

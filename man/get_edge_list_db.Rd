@@ -4,17 +4,17 @@
 \alias{get_edge_list_db}
 \title{Retrieve edge list from database}
 \usage{
-get_edge_list_db(con_mysql, pmids, table_name = "edgelist",
-  target_name = "Target")
+get_edge_list_db(conMysql, pmids, tableName = "EdgeList",
+  targetName = "Target")
 }
 \arguments{
-\item{con_mysql}{connection to mysql as defined in ~/.my.cnf}
+\item{conMysql}{connection to mysql as defined in ~/.my.cnf}
 
 \item{pmids}{list of pmids used to search database.}
 
-\item{table_name}{string with the name of the table used to store the edge list}
+\item{tableName}{string with the name of the table used to store the edge list}
 
-\item{target_name}{string with the name of the column used to store the Target of edge list}
+\item{targetName}{string with the name of the column used to store the Target of edge list}
 }
 \value{
 get_edge_list_db() will return the edge list in dataframe
@@ -24,8 +24,13 @@ get_edge_list_db() will return the edge list in dataframe
 }
 \details{
 `get_edge_list_db` will retrieve edge list from database with the provided list of PMIDs.
+If table is not found in database, NULL will be returned
 }
 \examples{
+# This will look for PMIDs in 'x' from the DB and get the Source and Target
 x <- c(21876761, 311, 29463753, 21876726)
-get_edge_list_db(con_mysql, x)
+res <- get_edge_list_db(conMysql, x)
+}
+\seealso{
+\code{\link{create_edge_list_table}} for edge list table structure
 }

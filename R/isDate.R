@@ -3,10 +3,10 @@
 #' `isDate` will try to format the input into a format recognizable to MySQL. If the formating fails, it will return NA
 
 #' @details
-#' `isDate` must come from the result of generateEdgeList
+#' `isDate` will try to format the input in YYYY-MM-DD and it will return NA if it cannot format the input.
 #'
-#' @param mydate string to be tested
-#' @return isDate() returns true or false if the value is a date
+#' @param mydate string to be formated.
+#' @return isDate() returns date in the format of YYYY-MM-DD. Returns NA if it fails to format.
 #'
 #' @examples
 #' 
@@ -21,9 +21,14 @@
 
 #' @export
 isDate <- function(mydate) {
-  # This is the date format that matches MySQL. Y = year with 4 digits, m = month with 2 digits, d = day with 2 digits
-  date.format = "%Y-%m-%d"
-  
-  # This will try to convert mydate into the corresponding date format and will return NA if it fails.
-  res <- as.Date(mydate, date.format)
+  if(!is.null(mydate)){
+    # This is the date format that matches MySQL. Y = year with 4 digits, m = month with 2 digits, d = day with 2 digits
+    date.format = "%Y-%m-%d"
+    
+    # This will try to convert mydate into the corresponding date format and will return NA if it fails.
+    res <- as.Date(mydate, date.format)
+  }else{
+    print("isDate: Input is NULL")
+    res <- NA
+  }
 }

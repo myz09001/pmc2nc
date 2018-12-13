@@ -27,10 +27,11 @@
 get_pmids_date <- function(conMysql, lastUpdate, tableName = "edgelist_date", dateName = "DatePMID", mysqlOperator = "<"){
   lastUpdate <- isDate(lastUpdate)
   if(!is.na(lastUpdate)){
+    print("get_pmids_date: Querying edge list insertion date.")
     qry <- paste0("SELECT * FROM ",tableName," WHERE ",dateName," " ,mysqlOperator," '",lastUpdate,"';")
     res <- dbGetQuery(conMysql, qry)
   }else{
-    print("Format of last update date is incorrect. Has to be YYYY-MM-DD.")
+    print("get_pmids_date: Format of last update date is incorrect. Has to be YYYY-MM-DD.")
     res <- NULL
   }
 }
