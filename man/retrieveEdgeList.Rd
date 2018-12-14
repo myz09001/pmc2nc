@@ -22,6 +22,46 @@ An edge list (data.frame) with one column for Target PMIDS and one column for so
 \description{
 `retrieveEdgeList` Retrieve an edge list from the provided PMIDs
 }
+\details{
+Code overview.
+1. Check if there is a MariaDBConnection, if not, just get everything from NCBI
+2. If there is a MariaDBConnection, check for tables in DB and create them if they dont exist.
+3. Check if lastUpdate = NULL, if lastUpdate is NULL, run retrieveEdgeList1.
+      retrieveEdgeList1 - 1. query table edge list date for PMID in database
+                          2. split the pmids list into pmids_in_db and pmids_not_in_db
+                          3. pmids_not_in_db search in NCBI and pmids_in_db search in DB
+                          4. insert edgelist of pmids_not_in_db into database
+4. If lastUpdate != NULL, check which PMIDs are out of date. If no PMIDs are out of date, run retrieveEdgeList1.
+5. If there are out of date PMIDs, get list of pmids_in_db and seperate the list between pmids do and not need update
+   Get a list of pmids that need to search NCBI if needed. Combine edge list from NCBI and pmids that need update. Then
+   insert this conbinded edge list to database. Query database with the list of pmids that do not need update.
+}
+\examples{
+pmid <- 21876761
+pmids1 <- c(21876761, 311, 29463753, 21876726)
+
+# This will create tables and insert edge list from one pmid "21876761"
+# This gets everything from NCBI if there is no database
+res1 <- retrieveEdgeList(pmid, conMysql = con_mysql)
+
+# This will not create new tables or insert edge list. This will just take everything from DB.
+# res2 == res1
+res2 <- retrieveEdgeList(pmid, conMysql = con_mysql)
+
+# This will not create new table. This will insert 29463753, 21876726
+# This will qry db for 21876761
+# result will be like res1 with the combine 29463753, 21876726 edge list
+res3 <- retrieveEdgeList(pmids1, conMysql = con_mysql)
+
+# This will insert Source with PMID 1000001 This will use to test lastUpdate
+# insertEdgeList will delete everything with "Target" = 21876761 and insert e1
+e1 <- data.frame("Source" = 1000001, "Target" = 21876761 )
+insertEdgeList(con_mysql, e1)
+
+# This should only return one edge list (1000001, 21876761)
+res4 <- retrieveEdgeList(pmid, conMysql = con_mysql)
+
+}
 \seealso{
 \code{\link{get_pmc_cited_in}} for obtaining edge_list citation results
 

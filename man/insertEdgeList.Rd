@@ -5,7 +5,7 @@
 \title{Insert edge lists to mysql database.}
 \usage{
 insertEdgeList(conMysql, edgeList, tableName = "EdgeList",
-  sourceName = "SourcePMID", targetName = "Target",
+  sourceName = "Source", targetName = "Target",
   dateTableName = "EdgeList_date")
 }
 \arguments{

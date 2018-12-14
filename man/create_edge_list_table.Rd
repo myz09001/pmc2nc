@@ -5,7 +5,7 @@
 \title{Create edge list table if not found.}
 \usage{
 create_edge_list_table(con_mysql, tableName = "EdgeList",
-  sourceName = "SourcePMID", targetName = "Target")
+  sourceName = "Source", targetName = "Target")
 }
 \arguments{
 \item{con_mysql}{connection to mysql as defined in ~/.my.cnf}
