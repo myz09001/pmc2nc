@@ -5,7 +5,7 @@
 ## Problem Statement
 
 ## Example
-![alt text](https://github.com/myz09001/pmc2nc/blob/master/pmc2nc_example.gif)
+![alt text](https://github.com/myz09001/pmc2nc/blob/master/pmc2nc_example1.gif)
 
 
 ## Availablity
